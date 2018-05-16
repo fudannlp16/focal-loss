@@ -26,7 +26,7 @@ def focal_loss_sigmoid(labels,logits,alpha=0.25,gamma=2):
       (1-labels)*alpha*(y_pred**gamma)*tf.log(1-y_pred)
     return L
 
-def focal_loss_softmax(labels,logits,alpha=0.25,gamma=2):
+def focal_loss_softmax(labels,logits,gamma=2):
     """
     Computer focal loss for multi classification
     Args:
@@ -41,4 +41,18 @@ def focal_loss_softmax(labels,logits,alpha=0.25,gamma=2):
     L=-labels*((1-y_pred)**gamma)*tf.log(y_pred)
     L=tf.reduce_sum(L,axis=1)
     return L
+
+if __name__ == '__main__':
+    logits=tf.random_uniform(shape=[5],minval=-1,maxval=1,dtype=tf.float32)
+    labels=tf.Variable([0,1,0,0,1])
+    loss1=focal_loss_sigmoid(labels=labels,logits=logits)
+
+    logits2=tf.random_uniform(shape=[5,4],minval=-1,maxval=1,dtype=tf.float32)
+    labels2=tf.Variable([1,0,2,3,1])
+    loss2=focal_loss_softmax(labels==labels2,logits=logits2)
+
+    with tf.Session() as sess:
+        sess.run(tf.global_variables_initializer())
+        print sess.run(loss1)
+        print sess.run(loss2)
 
